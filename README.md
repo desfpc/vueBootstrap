@@ -40,6 +40,20 @@ Where:
 - validationRule - validation function for this field
 - value - value for validation
 - slotProps.errorClass - param from Validation component for error class
+5) Run validation before submit form. Example of validation check method:
+```html
+    checkValidationArr() {
+        let result = true;
+
+        for (const [key, value] of Object.entries(this.validationArr)) {
+            if (key !== null && key !== 'null' && !value) {
+            return false
+            }
+        }
+
+        return result;
+    },
+```
 
 Example of validation methods and params in App:
 ```html
