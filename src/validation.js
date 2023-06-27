@@ -48,5 +48,15 @@ export default {
         app.config.globalProperties.$globalValidation = (id, value) => {
             app.config.globalProperties.$validationArr[id] = value
         }
+
+        app.config.globalProperties.$checkValidation = () => {
+            for (const [key, value] of Object.entries(app.config.globalProperties.$validationArr)) {
+                if (key !== null && key !== 'null' && !value) {
+                    return false
+                }
+            }
+
+            return true;
+        }
     }
 }

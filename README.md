@@ -30,3 +30,11 @@ Where you can change:
 - $validationRules.string - rule for validation (See all rules in validation.js)
 - <input... - any form element
 - <input :class="errorClass" - validated class for input
+4) Check your form for valid in your App:
+```html
+if (this.$checkValidation()) {
+    // Form is valid
+} else {
+    // Form is invalid
+}
+```
