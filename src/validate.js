@@ -34,7 +34,7 @@ export default {
             return this.errorText
         },
 
-        errorClass: function(){
+        errorTextClass: function(){
             if (this.errorClass === 'is-valid') {
                 return 'hidden'
             } else {
@@ -53,6 +53,6 @@ export default {
 
     template: `<div class="validateInput">
         <slot :errorClass="errorClass"></slot>
-        <div class="invalid-feedback" :class="errorClass">{{ errorParams }}</div>
+        <div class="invalid-feedback" :class="errorTextClass">{{ errorParams }}</div>
 </div>`
 }
