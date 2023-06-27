@@ -1,6 +1,6 @@
 export default {
 
-    props: ['validationRule', 'value', 'globalValidation'],
+    props: ['rule', 'value', 'func'],
 
     data() {
         return {
@@ -12,18 +12,22 @@ export default {
 
     methods: {
         validate(){
-            const validationObj = this.validationRule.validate(this.value)
-            this.globalValidation(this.id, validationObj.valid)
+            if (this.rule !== undefined) {
+                const validationObj = this.rule.validate(this.value)
+                this.func(this.id, validationObj.valid)
 
-            if (validationObj.valid) {
-                this.errorText = validationObj.error
-                this.errorClass = 'is-valid'
+                if (validationObj.valid) {
+                    this.errorText = validationObj.error
+                    this.errorClass = 'is-valid'
+                } else {
+                    this.errorText = validationObj.error
+                    this.errorClass = 'is-invalid'
+                }
+
+                return validationObj
             } else {
-                this.errorText = errorObj.error
-                this.errorClass = 'is-invalid'
+                console.log('Validation rule is undefined')
             }
-
-            return validationObj
         }
     },
 
