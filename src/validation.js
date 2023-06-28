@@ -2,6 +2,11 @@ export default {
     install: (app, options) => {
 
         app.config.globalProperties.$validationRules = {
+            empty: {
+                validate(val) {
+                    return {valid: true, error: ''}
+                }
+            },
             string: {
                 validate(val) {
                     if (val !== null && val.length > 0) {
