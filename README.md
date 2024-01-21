@@ -38,3 +38,37 @@ if (this.$checkValidation()) {
     // Form is invalid
 }
 ```
+
+## Tabs
+Component for vue 3 and bootstrap 5 tabs
+
+### Usage
+1) Copy *.js files to your project (in example to /js/vuebootstrap/ folder)
+2) Main Vue app file:
+```html
+const { createApp } = Vue
+import App from '/js/vendor/authorize/profile.js'
+import Tabs from '/js/vuebootstrap/tabs.js'
+
+const app = createApp(App)
+
+app.component("Tabs", Tabs);
+
+app.mount("#app");
+```
+3) In your App add tabs element:
+```html
+<Tabs tabsjson='[{"name": "Test_Tab1", "id": "test_tab_1"},
+ {"name": "Test_Tab2", "id": "test_tab_2"}]' startactivetab="test_tab_1">
+    <template v-slot:test_tab_1>
+        test tab 1 body
+    </template>
+    <template v-slot:test_tab_2>
+        test tab 2 body
+    </template>
+</Tabs>
+```
+Where:
+- tabsjson - json array with tabs names and ids
+- startactivetab - id of tab which will be active after page load
+- `<template v-slot:test_tab_1>` - body of tab with id "test_tab_1"
