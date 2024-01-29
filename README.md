@@ -72,3 +72,6 @@ Where:
 - tabsjson - json array with tabs names and ids
 - startactivetab - id of tab which will be active after page load
 - `<template v-slot:test_tab_1>` - body of tab with id "test_tab_1"
+
+## Active Table
+Component for vue 3 and bootstrap 5 table with ordering, pagination and filters
