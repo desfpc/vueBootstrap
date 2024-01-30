@@ -1,4 +1,10 @@
+import Link from './link.js'
+
 export default {
+
+    components: {
+        Link,
+    },
 
     props: ['apipath'],
 
@@ -36,15 +42,6 @@ export default {
             }).catch(error => {
                 console.log(error);
             });
-        },
-
-        getRowColumnValue(row, col)
-        {
-            if (row.hasOwnProperty(col.id)) {
-                return row[col.id];
-            } else {
-                return '';
-            }
         },
 
         getOrderClass(colId)
@@ -118,7 +115,12 @@ export default {
         </thead>
         <tbody>
             <tr v-for="row in rows">
-                <td v-for="col in cols">{{ getRowColumnValue(row, col) }}</td>
+                <td v-for="col in cols">
+                    <Link v-if="col.action === 'link'" :url="col.actionUrl" :target="col.target" :icon="col.icon" :aclass="col.class">
+                        {{ row[col.id] }}
+                    </Link>
+                    <span v-else>{{ row[col.id] }}</span>
+                </td>
             </tr>
         </tbody>
         <thead v-if="page > 1 || nextPage > page">
