@@ -1,9 +1,11 @@
 import Link from './link.js'
+import Button from './button.js'
+import Helper from './helper.js'
 
 export default {
 
     components: {
-        Link,
+        Link, Button,
     },
 
     props: ['apipath'],
@@ -18,6 +20,7 @@ export default {
             nextPage: null,
             limit: 20,
             selectedPage: 1,
+            helper: Helper,
         }
     },
 
@@ -73,7 +76,12 @@ export default {
         {
             this.selectedPage = page;
             this.load(page);
-        }
+        },
+
+        buttonCallback(response)
+        {
+            console.log(response);
+        },
     },
 
     computed: {
@@ -116,10 +124,14 @@ export default {
         <tbody>
             <tr v-for="row in rows">
                 <td v-for="col in cols">
-                    <Link v-if="col.action === 'link'" :url="col.actionUrl" :target="col.target" :icon="col.icon" :aclass="col.class">
+                    <Link v-if="col.action === 'link'" :url="helper.$parseUrl(col.actionUrl, row)" :target="col.target" :icon="col.icon" :aclass="col.class">
                         {{ row[col.id] }}
                     </Link>
                     <span v-else>{{ row[col.id] }}</span>
+                    <span v-for="button in col.buttons">
+                        <Link v-if="button.action === 'link'" :url="helper.$parseUrl(button.actionUrl, row)" :aclass="button.class" :icon="button.icon">{{ button.name }}</Link>
+                        <Button v-if="button.action !== 'link'" :callback="buttonCallback" :action="button.action" :url="helper.$parseUrl(button.actionUrl, row)" :aclass="button.class" :icon="button.icon">{{ button.name }}</Button>
+                    </span>
                 </td>
             </tr>
         </tbody>
