@@ -1,11 +1,12 @@
 import Link from './link.js'
 import Button from './button.js'
 import Helper from './helper.js'
+import Alerts from './alerts.js'
 
 export default {
 
     components: {
-        Link, Button,
+        Link, Button, Alerts
     },
 
     props: ['apipath'],
@@ -21,6 +22,7 @@ export default {
             limit: 20,
             selectedPage: 1,
             helper: Helper,
+            activeAlert: {},
         }
     },
 
@@ -80,7 +82,7 @@ export default {
 
         buttonCallback(response)
         {
-            console.log(response);
+            this.activeAlert = response;
         },
     },
 
@@ -106,6 +108,7 @@ export default {
     },
 
     template: `<div>
+    <Alerts :alert="activeAlert"></Alerts>
     <div v-if="filtersExist" class="d-flex justify-content-start flex-nowrap">
         <div class="form-group p-2 d-flex" v-for="filter in filters">
             <label class="p-1" :for="'filter_' + filter.id">{{ filter.name }}:</label>

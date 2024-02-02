@@ -10,17 +10,23 @@ export default {
                         this.callback({
                             'status': 'ok',
                             'message': 'ok',
+                            'class': 'success',
+                            'icon': 'check',
                         });
                     } else {
                         this.callback({
                             'status': 'error',
                             'message': response.data.message,
+                            'class': 'warning',
+                            'icon': 'exclamation-triangle',
                         });
                     }
                 }).catch(error => {
                     this.callback({
                         'status': 'error',
                         'message': error.message,
+                        'class': 'danger',
+                        'icon': 'sign-stop-fill',
                     });
                 });
             }
