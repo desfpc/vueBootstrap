@@ -11,14 +11,14 @@ export default {
                             'status': 'ok',
                             'message': 'ok',
                             'class': 'success',
-                            'icon': 'check',
+                            'icon': 'check-circle-fill',
                         });
                     } else {
                         this.callback({
                             'status': 'error',
                             'message': response.data.message,
                             'class': 'warning',
-                            'icon': 'exclamation-triangle',
+                            'icon': 'exclamation-triangle-fill',
                         });
                     }
                 }).catch(error => {
