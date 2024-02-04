@@ -1,15 +1,22 @@
 export default {
 
-    props: ['url', 'target', 'aclass', 'icon', 'action', 'callback'],
+    props: ['url', 'target', 'aclass', 'icon', 'action', 'callback', 'confirm'],
 
     methods: {
         onClick() {
+
+            if (this.confirm !== undefined && this.confirm !== '') {
+                if (!confirm(this.confirm)) {
+                    return;
+                }
+            }
+
             if (this.action === 'ajax') {
                 axios.post(this.url).then(response => {
-                    if (response.data.status === 'ok') {
+                    if (response.data.success === true) {
                         this.callback({
                             'status': 'ok',
-                            'message': 'ok',
+                            'message': response.data.data.message,
                             'class': 'success',
                             'icon': 'check-circle-fill',
                         });
@@ -22,9 +29,17 @@ export default {
                         });
                     }
                 }).catch(error => {
+
+                    console.log(error);
+                    let errorMessage = error.message;
+
+                    if (error.response !== undefined && error.response.data.data.message !== undefined) {
+                        errorMessage = error.response.data.data.message;
+                    }
+
                     this.callback({
                         'status': 'error',
-                        'message': error.message,
+                        'message': errorMessage,
                         'class': 'danger',
                         'icon': 'sign-stop-fill',
                     });

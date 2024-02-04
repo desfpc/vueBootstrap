@@ -1,12 +1,14 @@
 import Link from './link.js'
 import Button from './button.js'
+import Ainput from './ainput.js'
+import Aselect from './aselect.js'
 import Helper from './helper.js'
 import Alerts from './alerts.js'
 
 export default {
 
     components: {
-        Link, Button, Alerts
+        Link, Button, Alerts, Ainput, Aselect
     },
 
     props: ['apipath'],
@@ -83,6 +85,15 @@ export default {
         buttonCallback(response)
         {
             this.activeAlert = response;
+            
+            if (response.status === 'ok') {
+                this.load(this.page);
+            }
+        },
+
+        inputCallback(response)
+        {
+            this.activeAlert = response;
         },
     },
 
@@ -119,7 +130,7 @@ export default {
         </div>
     </div>
     <table class="table table-light table-bordered table-hover">
-        <thead class="table-dark">
+        <thead class="table-dark">   
             <tr>
                 <th v-for="col in cols">{{ col.name }}<span @click="orderClick(col.id)" :class="getOrderClass(col.id)" v-if="col.ordered === true"></span></th>
             </tr>
@@ -127,13 +138,24 @@ export default {
         <tbody>
             <tr v-for="row in rows">
                 <td v-for="col in cols">
-                    <Link v-if="col.action === 'link'" :url="helper.$parseUrl(col.actionUrl, row)" :target="col.target" :icon="col.icon" :aclass="col.class">
-                        {{ row[col.id] }}
-                    </Link>
-                    <span v-else>{{ row[col.id] }}</span>
-                    <span v-for="button in col.buttons">
-                        <Link v-if="button.action === 'link'" :url="helper.$parseUrl(button.actionUrl, row)" :aclass="button.class" :icon="button.icon">{{ button.name }}</Link>
-                        <Button v-if="button.action !== 'link'" :callback="buttonCallback" :action="button.action" :url="helper.$parseUrl(button.actionUrl, row)" :aclass="button.class" :icon="button.icon">{{ button.name }}</Button>
+                    <span v-if="col.editable === true">
+                        <Ainput v-if="col.inputType === 'input'" :url="helper.$parseUrl(col.editUrl, row)" :value="row[col.id]"
+                        :property="col.id" :callback="inputCallback"></Ainput>
+                        <Aselect v-if="col.inputType === 'select'" :url="helper.$parseUrl(col.editUrl, row)" :value="row[col.id]"
+                        :property="col.id" :callback="inputCallback" :variants="col.selectArray"></Aselect>
+                    </span>
+                    <span v-else>
+                        <Link v-if="col.action === 'link'" :url="helper.$parseUrl(col.actionUrl, row)" :target="col.target" :icon="col.icon" :aclass="col.class">
+                            {{ row[col.id] }}
+                        </Link>
+                        <span v-else>{{ row[col.id] }}</span>
+                        <span v-for="button in col.buttons">
+                            <Link v-if="button.action === 'link'" :url="helper.$parseUrl(button.actionUrl, row)"
+                            :aclass="button.class" :icon="button.icon">{{ button.name }}</Link>
+                            <Button v-if="button.action !== 'link'" :callback="buttonCallback" :action="button.action"
+                            :url="helper.$parseUrl(button.actionUrl, row)" :aclass="button.class" :icon="button.icon"
+                            :confirm="button.confirm">{{ button.name }}</Button>
+                        </span>
                     </span>
                 </td>
             </tr>
