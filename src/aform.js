@@ -11,12 +11,16 @@ export default {
 
     data() {
         return {
-            formAction: '',
+            formActions: '',
             formData: {},
             formNames: {},
             formSelects: {},
             formTypes: {},
             formButtons: {},
+            formPassword: { // if form have pasword field hack
+                'password': '',
+                'repeatPassword': '',
+            },
         }
     },
 
@@ -32,7 +36,7 @@ export default {
                         console.log('Aform response: ');
                         console.log(realData);
 
-                        this.formAction = realData.formAction;
+                        this.formActions = realData.formActions;
                         this.formData = realData.formData;
                         this.formNames = realData.formNames;
                         this.formSelects = realData.formSelects;
@@ -70,8 +74,9 @@ export default {
             <option v-for="(optionValue, option) in formSelects[name]" :value="option">{{ optionValue }}</option>
           </select>
           <input type="checkbox" v-if="formTypes[name] === 'checkbox'" v-model="formData[name]"></input>
-          <div v-if="formTypes[name] === 'password'">
-            TODO password change
+          <div v-if="formTypes[name] === 'password'" class="row">
+            <div class="col-md-6"><input type="password" class="form-control" v-model="formPassword['password']"></div>
+            <div class="col-md-6"><input type="password" class="form-control" v-model="formPassword['repeatPassword']"></div>
           </div>
           <div v-if="formTypes[name] === 'avatar'">
             TODO avatar change
