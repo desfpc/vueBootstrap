@@ -4,7 +4,7 @@ export default {
         app.config.globalProperties.$validationRules = {
             empty: {
                 validate(val) {
-                    return {valid: true, error: ''}
+                    return {valid: true, error: '', return: true}
                 }
             },
             string: {
@@ -12,9 +12,36 @@ export default {
                     if (val !== null && val.length > 0) {
                         return {valid: true, error: ''}
                     } else {
-                        return {valid: false, error: 'Empty string'}
+                        return {valid: false, error: 'Empty string'} //TODO translate
                     }
                 },
+            },
+            email: {
+                validate(val) {
+                    if (val !== null && val.length > 0 && val.includes('@') && val.includes('.')) {
+                        return {valid: true, error: ''}
+                    } else {
+                        return {valid: false, error: 'Not an email'}
+                    }
+                },
+            },
+            bool: {
+                validate(val) {
+                    if (val === true || val === false || val === 1 || val === 0 || val === '0' || val === '1') {
+                        return {valid: true, error: ''}
+                    } else {
+                        return {valid: false, error: 'Not a boolean'}
+                    }
+                },
+            },
+            float: {
+                validate(val) {
+                    if (parseFloat(val) === val && !Number.isInteger(val)) {
+                        return {valid: true, error: ''}
+                    } else {
+                        return {valid: false, error: 'Not a float'}
+                    }
+                }
             },
             positiveInteger: {
                 validate(val) {

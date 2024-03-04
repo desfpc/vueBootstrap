@@ -11,34 +11,79 @@ export default {
     },
 
     methods: {
-        validate(){
-            if (this.rule !== undefined) {
-                const validationObj = this.rule.validate(this.value)
-                this.func(this.id, validationObj.valid)
 
-                if (validationObj.valid) {
-                    this.errorText = validationObj.error
-                    this.errorClass = 'is-valid'
-                } else {
-                    this.errorText = validationObj.error
-                    this.errorClass = 'is-invalid'
-                }
+        setErrorTextAndClass(validationObj) {
+            this.errorText = validationObj.error
 
-                return validationObj
+            if (validationObj.valid) {
+                this.errorClass = 'is-valid'
+            } else {
+                this.errorClass = 'is-invalid'
+            }
+        },
+
+        validateArr() {
+            if (this.rule.isArray) {
+
+                const validationObjReturn = {valid: true, error: ''};
+
+                this.rule.forEach((rule) => {
+                    validationObj = validateSingle(rule);
+
+                    if (validationObj.valid === false) {
+                        this.func(this.id, validationObj.valid)
+                        this.setErrorTextAndClass(validationObj);
+                        return validationObj;
+                    } else {
+                        if (validationObj.hasOwnProperty('return') && validationObj.return === true) {
+                            this.setErrorTextAndClass(validationObjReturn);
+                            this.func(this.id, validationObjReturn.valid)
+                            return validationObjReturn;
+                        }
+                    }
+                });
+
+                this.setErrorTextAndClass(validationObjReturn);
+                this.func(this.id, validationObjReturn.valid)
+                return validationObjReturn;
+
+            } else {
+                return this.validate();
+            }
+        },
+
+        validateSingle(rule) {
+            if (rule !== undefined) {
+                return rule.validate(this.value)
             } else {
                 console.log('Validation rule is undefined')
+                return {valid: true, error: ''}
             }
+        },
+
+        validate() {
+            if (this.rule !== undefined) {
+                const validationObj = this.rule.validate(this.value)
+            } else {
+                const validationObj = {valid: true, error: ''}
+                console.log('Validation rule is undefined')
+            }
+
+            this.func(this.id, validationObj.valid)
+            this.setErrorTextAndClass(validationObj);
+
+            return validationObj;
         }
     },
 
     computed: {
-        errorParams: function(){
+        errorParams: function() {
             const errorObj = this.validate()
 
             return this.errorText
         },
 
-        errorTextClass: function(){
+        errorTextClass: function() {
             if (this.errorClass === 'is-valid') {
                 return 'hidden'
             } else {

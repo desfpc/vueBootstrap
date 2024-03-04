@@ -1,10 +1,12 @@
 import Helper from './helper.js'
 import Alerts from './alerts.js'
+import Validation from './validation.js'
+import Validate from './validate.js'
 
 export default {
 
     components: {
-        Alerts
+        Alerts, Validation, Validate
     },
 
     props: ['apipath'],
@@ -21,6 +23,7 @@ export default {
                 'password': '',
                 'repeatPassword': '',
             },
+            activeAlert: {},
         }
     },
 
@@ -52,8 +55,74 @@ export default {
             });
         },
 
+        checkPassword() {
+            if (this.formPassword['password'] !== '' && this.formPassword['password'].length < 8) {
+                this.activeAlert = {
+                    class: 'danger',
+                    icon: 'key-fill',
+                    message: 'Password is too short'
+                }
+                return false;
+            }
+
+            return true;
+        },
+
         save() {
             console.log(this.formData);
+        },
+
+        password() {
+            var bodyFormData = new FormData();
+            bodyFormData.append('password', this.formPassword['password']);
+            bodyFormData.append('repeatPassword', this.formPassword['repeatPassword']);
+
+            axios({
+                method: "post",
+                url: this.formActions['password'],
+                data: bodyFormData,
+                headers: { "Content-Type": "multipart/form-data" },
+            }).then(response => {
+                if (response.data.success === true) {
+                    this.activeAlert = {
+                        'status': 'ok',
+                        'message': response.data.data.message,
+                        'class': 'success',
+                        'icon': 'check-circle-fill',
+                    };
+                } else {
+                    this.activeAlert = {
+                        'status': 'error',
+                        'message': response.data.message,
+                        'class': 'warning',
+                        'icon': 'exclamation-triangle-fill',
+                    };
+                }
+            }).catch(error => {
+                console.log(error);
+                let errorMessage = error.message;
+
+                if (error.response !== undefined && error.response.data.data !== undefined && error.response.data.data.message !== undefined) {
+                    errorMessage = error.response.data.data.message;
+                }
+
+                this.activeAlert = {
+                    'status': 'error',
+                    'message': errorMessage,
+                    'class': 'danger',
+                    'icon': 'sign-stop-fill',
+                };
+            });
+        },
+    },
+
+    computed: {
+        disabledPassword() {
+            if (this.formPassword['password'] === '' || this.formPassword['repeatPassword'] === '' || this.formPassword['password'] !== this.formPassword['repeatPassword']) {
+                return 'disabled';
+            } else {
+                return this.checkPassword() ? '' : 'disabled';
+            }
         }
     },
 
@@ -75,8 +144,9 @@ export default {
           </select>
           <input type="checkbox" v-if="formTypes[name] === 'checkbox'" v-model="formData[name]"></input>
           <div v-if="formTypes[name] === 'password'" class="row">
-            <div class="col-md-6"><input type="password" class="form-control" v-model="formPassword['password']"></div>
-            <div class="col-md-6"><input type="password" class="form-control" v-model="formPassword['repeatPassword']"></div>
+            <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['password']"></div>
+            <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['repeatPassword']"></div>
+            <div class="col-md-2"><button class="btn btn-primary" :class="disabledPassword" @click="password">{{ formButtons['password'] }}</button></div>
           </div>
           <div v-if="formTypes[name] === 'avatar'">
             TODO avatar change
@@ -86,7 +156,7 @@ export default {
           </div>
         </div>
       </div>
-      <div class="col-md-12">
+      <div class="col-md-12 mb-4">
         <button class="btn btn-primary mt-3 ms-1" @click="save">{{ formButtons['save'] }}</button>
         <button class="btn btn-warning mt-3 ms-1" @click="load">{{ formButtons['load'] }}</button>
       </div>
