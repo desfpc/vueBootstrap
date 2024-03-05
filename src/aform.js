@@ -23,6 +23,7 @@ export default {
                 'repeatPassword': '',
             },
             formValidators: {},
+            formJsons: {},
             activeAlert: {},
         }
     },
@@ -46,6 +47,7 @@ export default {
                         this.formTypes = realData.formTypes;
                         this.formButtons = realData.formButtons;
                         this.formValidators = realData.formValidators;
+                        this.formJsons = realData.formJsons;
 
                     } else {
                         throw new Error('Status error');
@@ -148,13 +150,20 @@ export default {
             <div v-if="formTypes[name] === 'password'" class="row">
               <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['password']"></div>
               <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['repeatPassword']"></div>
-              <div class="col-md-2"><button class="btn btn-primary" :class="disabledPassword" @click="password">{{ formButtons['password'] }}</button></div>
+              <div class="col-md-2"><button class="btn btn-danger" :class="disabledPassword" @click="password">{{ formButtons['password'] }}</button></div>
             </div>
             <div v-if="formTypes[name] === 'avatar'">
               TODO avatar change
             </div>
-            <div v-if="formTypes[name] === 'jsonKeyValue'">
-              TODO jsonKeyValue change
+            <div v-if="formTypes[name] === 'jsonKeyValue'" class="mt-3 mb-1">
+              <div class="row mb-2" v-for="(optionValue, option) in formJsons[name]">
+                <div class="col-md-2">
+                  <label :for="optionValue">{{ optionValue }}</label>
+                </div>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" v-model="formData[name][optionValue]">
+                </div>
+              </div>
             </div>
           </Validate>
         </div>
