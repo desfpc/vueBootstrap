@@ -26,6 +26,7 @@ export default {
             if (Object.keys(this.rule).length > 1) {
                 let validationObjReturn = {valid: true, error: ''};
                 let self = this;
+                let forceTrue = false;
                 this.rule.forEach(function(rule) {
 
                     let validationObj = self.validateSingle(rule);
@@ -35,10 +36,15 @@ export default {
                         return validationObj;
                     } else {
                         if (validationObj.hasOwnProperty('return') && validationObj.return === true) {
+                            forceTrue = true;
                             return validationObjReturn;
                         }
                     }
                 });
+
+                if (forceTrue === true) {
+                    validationObjReturn = {valid: true, error: ''};
+                }
 
                 this.setErrorTextAndClass(validationObjReturn);
                 this.func(this.id, validationObjReturn.valid)

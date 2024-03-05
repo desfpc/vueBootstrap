@@ -50,7 +50,10 @@ export default {
             },
             float: {
                 validate(val) {
-                    if (parseFloat(val) === val && !Number.isInteger(val)) {
+
+                    const floatVal = /^\-?[0-9]+(e[0-9]+)?(\.[0-9]+)?$/.test(val);
+
+                    if (floatVal) {
                         return {valid: true, error: ''}
                     } else {
                         return {valid: false, error: 'Not a float'}
