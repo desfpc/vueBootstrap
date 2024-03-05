@@ -1,6 +1,20 @@
 export default {
     install: (app, options) => {
 
+        app.config.globalProperties.$getValidationRuleFromString = (rule) => {
+            if (rule.indexOf('|') > -1) {
+                let arr = [];
+
+                rule.split('|').forEach((r) => {
+                    arr.push(app.config.globalProperties.$validationRules[r]);
+                });
+
+                return arr;
+            } else {
+                return app.config.globalProperties.$validationRules[rule]
+            }
+        }
+
         app.config.globalProperties.$validationRules = {
             empty: {
                 validate(val) {

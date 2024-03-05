@@ -4,9 +4,8 @@ import Validation from './validation.js'
 import Validate from './validate.js'
 
 export default {
-
     components: {
-        Alerts, Validation, Validate
+        Alerts, Validate
     },
 
     props: ['apipath'],
@@ -23,6 +22,7 @@ export default {
                 'password': '',
                 'repeatPassword': '',
             },
+            formValidators: {},
             activeAlert: {},
         }
     },
@@ -45,6 +45,7 @@ export default {
                         this.formSelects = realData.formSelects;
                         this.formTypes = realData.formTypes;
                         this.formButtons = realData.formButtons;
+                        this.formValidators = realData.formValidators;
 
                     } else {
                         throw new Error('Status error');
@@ -137,23 +138,25 @@ export default {
           <label :for="name">{{ formNames[name] }}</label>
         </div>
         <div class="col-md-10">
-          <span class="fw-bold" v-if="formTypes[name] === 'label'">{{ value }}</span>
-          <input v-if="formTypes[name] === undefined || formTypes[name] === 'input'" type="text" class="form-control" v-model="formData[name]">
-          <select v-if="formTypes[name] === 'select'" class="form-control" v-model="formData[name]">
-            <option v-for="(optionValue, option) in formSelects[name]" :value="option">{{ optionValue }}</option>
-          </select>
-          <input type="checkbox" v-if="formTypes[name] === 'checkbox'" v-model="formData[name]"></input>
-          <div v-if="formTypes[name] === 'password'" class="row">
-            <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['password']"></div>
-            <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['repeatPassword']"></div>
-            <div class="col-md-2"><button class="btn btn-primary" :class="disabledPassword" @click="password">{{ formButtons['password'] }}</button></div>
-          </div>
-          <div v-if="formTypes[name] === 'avatar'">
-            TODO avatar change
-          </div>
-          <div v-if="formTypes[name] === 'jsonKeyValue'">
-            TODO jsonKeyValue change
-          </div>
+          <Validate v-slot="{ errorClass }" :rule="$getValidationRuleFromString(formValidators[name] ?? 'empty')" :value="formData[name]" :func="$globalValidation">
+            <span class="fw-bold" v-if="formTypes[name] === 'label'">{{ value }}</span>
+            <input v-if="formTypes[name] === undefined || formTypes[name] === 'input'" type="text" class="form-control" v-model="formData[name]">
+            <select v-if="formTypes[name] === 'select'" class="form-control" v-model="formData[name]">
+              <option v-for="(optionValue, option) in formSelects[name]" :value="option">{{ optionValue }}</option>
+            </select>
+            <input type="checkbox" v-if="formTypes[name] === 'checkbox'" v-model="formData[name]"></input>
+            <div v-if="formTypes[name] === 'password'" class="row">
+              <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['password']"></div>
+              <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['repeatPassword']"></div>
+              <div class="col-md-2"><button class="btn btn-primary" :class="disabledPassword" @click="password">{{ formButtons['password'] }}</button></div>
+            </div>
+            <div v-if="formTypes[name] === 'avatar'">
+              TODO avatar change
+            </div>
+            <div v-if="formTypes[name] === 'jsonKeyValue'">
+              TODO jsonKeyValue change
+            </div>
+          </Validate>
         </div>
       </div>
       <div class="col-md-12 mb-4">

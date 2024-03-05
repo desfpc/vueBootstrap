@@ -23,21 +23,18 @@ export default {
         },
 
         validateArr() {
-            if (this.rule.isArray) {
+            if (Object.keys(this.rule).length > 1) {
+                let validationObjReturn = {valid: true, error: ''};
+                let self = this;
+                this.rule.forEach(function(rule) {
 
-                const validationObjReturn = {valid: true, error: ''};
-
-                this.rule.forEach((rule) => {
-                    validationObj = validateSingle(rule);
+                    let validationObj = self.validateSingle(rule);
 
                     if (validationObj.valid === false) {
-                        this.func(this.id, validationObj.valid)
-                        this.setErrorTextAndClass(validationObj);
+                        validationObjReturn = validationObj;
                         return validationObj;
                     } else {
                         if (validationObj.hasOwnProperty('return') && validationObj.return === true) {
-                            this.setErrorTextAndClass(validationObjReturn);
-                            this.func(this.id, validationObjReturn.valid)
                             return validationObjReturn;
                         }
                     }
@@ -62,23 +59,25 @@ export default {
         },
 
         validate() {
+
+            let validationObj = {valid: true, error: ''}
+
             if (this.rule !== undefined) {
-                const validationObj = this.rule.validate(this.value)
+                validationObj = this.rule.validate(this.value)
             } else {
-                const validationObj = {valid: true, error: ''}
                 console.log('Validation rule is undefined')
             }
 
             this.func(this.id, validationObj.valid)
             this.setErrorTextAndClass(validationObj);
-
+            
             return validationObj;
         }
     },
 
     computed: {
         errorParams: function() {
-            const errorObj = this.validate()
+            const errorObj = this.validateArr()
 
             return this.errorText
         },
@@ -93,11 +92,10 @@ export default {
     },
 
     mounted() {
-        console.log(`Validation vue component is mounted!`)
         let u = Date.now().toString(16) + Math.random().toString(16) + '0'.repeat(16);
         this.id = [u.substr(0,8), u.substr(8,4), '4000-8' + u.substr(13,3), u.substr(16,12)].join('-');
 
-        this.validate()
+        this.validateArr()
     },
 
     template: `<div class="validateInput">
