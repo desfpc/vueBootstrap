@@ -2,10 +2,11 @@ import Helper from './helper.js'
 import Alerts from './alerts.js'
 import Validation from './validation.js'
 import Validate from './validate.js'
+import CheckboxGroup from './checkbox-group.js'
 
 export default {
     components: {
-        Alerts, Validate
+        Alerts, Validate, CheckboxGroup
     },
 
     props: ['apipath'],
@@ -16,6 +17,7 @@ export default {
             formData: {},
             formNames: {},
             formSelects: {},
+            formMultiSelects: {},
             formTypes: {},
             formButtons: {},
             formPassword: { // if form have pasword field hack
@@ -29,6 +31,11 @@ export default {
     },
 
     methods: {
+
+        setLanguages(value, key) {
+            this.formData[key] = value;
+        },
+
         load() {
             console.log('Aform mounted - apipath: ' + this.apipath)
             axios.get(this.apipath, {})
@@ -44,10 +51,28 @@ export default {
                         this.formData = realData.formData;
                         this.formNames = realData.formNames;
                         this.formSelects = realData.formSelects;
+                        this.formMultiSelects = realData.formMultiSelects;
                         this.formTypes = realData.formTypes;
                         this.formButtons = realData.formButtons;
                         this.formValidators = realData.formValidators;
                         this.formJsons = realData.formJsons;
+
+                        for (const [key, value] of Object.entries(this.formJsons)) {
+                            if (this.formData[key] === null) {
+                                this.formData[key] = {};
+                                value.forEach((element) => {
+                                    if (this.formData[key][element] === undefined) {
+                                        this.formData[key][element] = '';
+                                    }
+                                });
+                            }
+                        }
+
+                        for (const [key, value] of Object.entries(this.formMultiSelects)) {
+                            if (this.formData[key] === null) {
+                                this.formData[key] = [];
+                            }
+                        }
 
                     } else {
                         throw new Error('Status error');
@@ -73,6 +98,43 @@ export default {
 
         save() {
             console.log(this.formData);
+
+            axios({
+                method: "post",
+                url: this.formActions['save'],
+                data: JSON.stringify(this.formData),
+                headers: { "Content-Type": "application/json" },
+            }).then(response => {
+                if (response.data.success === true) {
+                    this.activeAlert = {
+                        'status': 'ok',
+                        'message': response.data.data.message,
+                        'class': 'success',
+                        'icon': 'check-circle-fill',
+                    };
+                } else {
+                    this.activeAlert = {
+                        'status': 'error',
+                        'message': response.data.message,
+                        'class': 'warning',
+                        'icon': 'exclamation-triangle-fill',
+                    };
+                }
+            }).catch(error => {
+                console.log(error);
+                let errorMessage = error.message;
+
+                if (error.response !== undefined && error.response.data.data !== undefined && error.response.data.data.message !== undefined) {
+                    errorMessage = error.response.data.data.message;
+                }
+
+                this.activeAlert = {
+                    'status': 'error',
+                    'message': errorMessage,
+                    'class': 'danger',
+                    'icon': 'sign-stop-fill',
+                };
+            });
         },
 
         password() {
@@ -164,6 +226,13 @@ export default {
                   <input type="text" class="form-control" v-model="formData[name][optionValue]">
                 </div>
               </div>
+            </div>
+            <div v-if="formTypes[name] === 'multiSelect'" class="mt-3 mb-1">
+              <Checkbox-Group :value="formData[name]" :data-Array="formMultiSelects[name]" :callback="setLanguages" :data-key="name"></Checkbox-Group>
+              <!--<div v-for="(key, value) in formMultiSelects[name]" class="d-inline-flex me-3">
+                <label class="d-inline-flex" :for="key">{{ value }}</label>
+                <input class="d-inline-flex" type="checkbox" v-model="formData[name][key]"/>
+              </div>-->
             </div>
           </Validate>
         </div>
