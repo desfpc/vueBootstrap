@@ -3,10 +3,11 @@ import Alerts from './alerts.js'
 import Validation from './validation.js'
 import Validate from './validate.js'
 import CheckboxGroup from './checkbox-group.js'
+import Avatar from './avatar.js'
 
 export default {
     components: {
-        Alerts, Validate, CheckboxGroup
+        Alerts, Validate, CheckboxGroup, Avatar
     },
 
     props: ['apipath'],
@@ -26,6 +27,7 @@ export default {
             },
             formValidators: {},
             formJsons: {},
+            formFiles: {},
             activeAlert: {},
         }
     },
@@ -34,6 +36,10 @@ export default {
 
         setLanguages(value, key) {
             this.formData[key] = value;
+        },
+
+        setAvatar(response) {
+            console.log('Avatar set: ' + response);
         },
 
         load() {
@@ -49,6 +55,7 @@ export default {
 
                         this.formActions = realData.formActions;
                         this.formData = realData.formData;
+                        this.formFiles = realData.formFiles;
                         this.formNames = realData.formNames;
                         this.formSelects = realData.formSelects;
                         this.formMultiSelects = realData.formMultiSelects;
@@ -215,7 +222,7 @@ export default {
               <div class="col-md-2"><button class="btn btn-danger" :class="disabledPassword" @click="password">{{ formButtons['password'] }}</button></div>
             </div>
             <div v-if="formTypes[name] === 'avatar'">
-              TODO avatar change
+              <Avatar :value="formData[name]" :callback="setAvatar" :url="formActions[name]" :file-url="formFiles[name]"></Avatar>
             </div>
             <div v-if="formTypes[name] === 'jsonKeyValue'" class="mt-3 mb-1">
               <div class="row mb-2" v-for="(optionValue, option) in formJsons[name]">

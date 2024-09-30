@@ -16,8 +16,10 @@ export default {
         }
     },
 
-    template: `<div class="row" v-for="(val, key, index) in dataArray">
-      <div class="col-2"><input type="checkbox" :value="val.value" v-model="newValue"></div>
-      <div class="col-10">{{ val.text }} - {{ index }}</div>
+    template: `<div class="form-check" v-for="(val, key, index) in dataArray">
+      <input class="form-check-input" type="checkbox" :value="val.value" v-model="newValue" :id="dataKey + ':' + val.value">
+      <label class="form-check-label" :for="dataKey + ':' + val.value">
+        {{ val.text }}
+      </label>
     </div>`
 }
