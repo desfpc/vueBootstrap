@@ -35,7 +35,21 @@ export default {
     methods: {
 
         setLanguages(value, key) {
-            this.formData[key] = value;
+            //console.log('setLanguages: ' + key + ' - ' + value);
+
+            let keyArray = key.split(':');
+            //console.log('keyArray:');
+            //console.log(keyArray);
+
+            let dataKey = keyArray[0];
+            let languagesArray = keyArray[2].split('_');
+            languagesArray = languagesArray.filter(function (el) {
+                return el !== '';
+            });
+            //console.log('languagesArray:');
+            //console.log(languagesArray);
+
+            this.formData[dataKey] = languagesArray;
         },
 
         setAvatar(response) {
