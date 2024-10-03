@@ -38,19 +38,29 @@ export default {
         },
 
         setAvatar(response) {
-            console.log('Avatar set: ' + response);
+            if (response.success === true) {
+                this.formFiles.avatar = response.data.url;
+                this.activeAlert = {
+                    'status': 'ok',
+                    'message': response.data.message,
+                    'class': 'success',
+                    'icon': 'check-circle-fill',
+                };
+            } else {
+                this.activeAlert = {
+                    'status': 'error',
+                    'message': response.data.message,
+                    'class': 'warning',
+                    'icon': 'exclamation-triangle-fill',
+                };
+            }
         },
 
         load() {
-            console.log('Aform mounted - apipath: ' + this.apipath)
             axios.get(this.apipath, {})
                 .then(response => {
                     if (response.data !== undefined && response.data.success === true) {
-
                         const realData = response.data.data;
-
-                        console.log('Aform response: ');
-                        console.log(realData);
 
                         this.formActions = realData.formActions;
                         this.formData = realData.formData;
@@ -103,14 +113,15 @@ export default {
         },
 
         save() {
-            console.log(this.formData);
-
             axios({
                 method: "post",
                 url: this.formActions['save'],
                 data: JSON.stringify(this.formData),
                 headers: { "Content-Type": "application/json" },
             }).then(response => {
+                
+                console.log(response);
+
                 if (response.data.success === true) {
                     this.activeAlert = {
                         'status': 'ok',
@@ -207,7 +218,7 @@ export default {
         <div class="col-md-2">
           <label :for="name">{{ formNames[name] }}</label>
         </div>
-        <div class="col-md-10">
+        <div class="col-md-10"> 
           <Validate v-slot="{ errorClass }" :rule="$getValidationRuleFromString(formValidators[name] ?? 'empty')" :value="formData[name]" :func="$globalValidation">
             <span class="fw-bold" v-if="formTypes[name] === 'label'">{{ value }}</span>
             <input v-if="formTypes[name] === undefined || formTypes[name] === 'input'" type="text" class="form-control" v-model="formData[name]">

@@ -14,6 +14,9 @@ export default {
             const formData = new FormData()
             formData.append('file', files[0])
 
+            console.log(this.url);
+            console.log(formData);
+
             axios.post(this.url, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'

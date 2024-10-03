@@ -17,6 +17,9 @@ export default {
             return this.newValue.includes(cValue);
         },
         checkChange(cValue) {
+
+            console.log(this.newValue);
+
             if (this.newValue.includes(cValue)) {
                 this.newValue = this.newValue.filter(function(value, index, arr) {
                     return value != cValue;
@@ -24,15 +27,25 @@ export default {
             } else {
                 this.newValue.push(cValue);
             }
-            this.callback(this.dataKey, JSON.stringify(this.newValue));
+
+            console.log(this.newValue);
+
+            this.callback(this.dataKey, this.newValue);
         },
     },
 
     mounted() {
         try {
-            this.newValue = JSON.parse(this.value);
+            console.log(this.value);
+
+            //if this.value is not array
+            if(!Array.isArray(this.value)) {
+                this.newValue = JSON.parse(this.value);
+            } else {
+                this.newValue = this.value;
+            }
         } catch (e) {
-            this.newValue = {};
+            this.newValue = [];
         }
     },
 
