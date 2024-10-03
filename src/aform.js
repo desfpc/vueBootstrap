@@ -33,23 +33,8 @@ export default {
     },
 
     methods: {
-
-        setLanguages(value, key) {
-            //console.log('setLanguages: ' + key + ' - ' + value);
-
-            let keyArray = key.split(':');
-            //console.log('keyArray:');
-            //console.log(keyArray);
-
-            let dataKey = keyArray[0];
-            let languagesArray = keyArray[2].split('_');
-            languagesArray = languagesArray.filter(function (el) {
-                return el !== '';
-            });
-            //console.log('languagesArray:');
-            //console.log(languagesArray);
-
-            this.formData[dataKey] = languagesArray;
+        setCheckboxGroupData(key, data) {
+            this.formData[key] = data;
         },
 
         setAvatar(response) {
@@ -249,7 +234,7 @@ export default {
               </div>
             </div>
             <div v-if="formTypes[name] === 'multiSelect'" class="mt-3 mb-1">
-              <Checkbox-Group :value="formData[name]" :data-Array="formMultiSelects[name]" :callback="setLanguages" :data-key="name"></Checkbox-Group>
+              <Checkbox-Group :value="formData[name]" :data-Array="formMultiSelects[name]" :callback="setCheckboxGroupData" :data-Key="name"></Checkbox-Group>
               <!--<div v-for="(key, value) in formMultiSelects[name]" class="d-inline-flex me-3">
                 <label class="d-inline-flex" :for="key">{{ value }}</label>
                 <input class="d-inline-flex" type="checkbox" v-model="formData[name][key]"/>
