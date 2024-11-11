@@ -150,7 +150,7 @@ export default {
                         </Link>
                         <span v-else>{{ row[col.id] }}</span>
                         <span v-for="button in col.buttons">
-                            <Link v-if="button.action === 'link'" :url="helper.$parseUrl(button.actionUrl, row)"
+                            <Link v-if="button.action === 'link'" :url="helper.$parseUrl(button.actionUrl, row)" :target="button.target"
                             :aclass="button.class" :icon="button.icon">{{ button.name }}</Link>
                             <Button v-if="button.action !== 'link'" :callback="buttonCallback" :action="button.action"
                             :url="helper.$parseUrl(button.actionUrl, row)" :aclass="button.class" :icon="button.icon"

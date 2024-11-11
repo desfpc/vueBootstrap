@@ -4,10 +4,11 @@ import Validation from './validation.js'
 import Validate from './validate.js'
 import CheckboxGroup from './checkbox-group.js'
 import Avatar from './avatar.js'
+import Link from './link.js'
 
 export default {
     components: {
-        Alerts, Validate, CheckboxGroup, Avatar
+        Alerts, Validate, CheckboxGroup, Avatar, Link
     },
 
     props: ['apipath'],
@@ -221,11 +222,13 @@ export default {
         <div class="col-md-10"> 
           <Validate v-slot="{ errorClass }" :rule="$getValidationRuleFromString(formValidators[name] ?? 'empty')" :value="formData[name]" :func="$globalValidation">
             <span class="fw-bold" v-if="formTypes[name] === 'label'">{{ value }}</span>
+            <textarea v-if="formTypes[name] === 'textarea'" type="text" class="form-control" v-model="formData[name]"></textarea>
             <input v-if="formTypes[name] === undefined || formTypes[name] === 'input'" type="text" class="form-control" v-model="formData[name]">
             <select v-if="formTypes[name] === 'select'" class="form-control" v-model="formData[name]">
               <option v-for="(optionValue, option) in formSelects[name]" :value="option">{{ optionValue }}</option>
             </select>
             <input type="checkbox" v-if="formTypes[name] === 'checkbox'" v-model="formData[name]"></input>
+            <Link v-if="formTypes[name] === 'link'" :url="formData[name]" target="_blank">{{ formData[name] }}</Link>
             <div v-if="formTypes[name] === 'password'" class="row">
               <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['password']"></div>
               <div class="col-md-5"><input type="password" class="form-control" v-model="formPassword['repeatPassword']"></div>
